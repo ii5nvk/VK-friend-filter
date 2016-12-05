@@ -1,0 +1,1 @@
+#VK friend Filter
