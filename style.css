@@ -38,7 +38,7 @@ h1{ color: #fff;background-color: #FF8E6C; padding:13px 15px; font-size:1.333em;
     background-color: #fafbfc;}
     .friend__img{float:left;}
     .friend__name{float:left; margin-left:10px;line-height:50px;}
-    .friend__item{list-style:none;cursor:move;border-top:1px solid #ccc;padding:10px 0;}
+    .friend__item{list-style:none;cursor:move;border-top:1px solid #ccc;padding:10px 0; position:relative;}
     .friend__item:after {
   content: ".";
   display: block;
@@ -61,3 +61,7 @@ input{border:0; outline:0; width:100%; height:25px; line-height:25px; border-rad
 .friends{padding-left:15px;}
 h2{color: #4F4F4F;font-weight: 500;padding:10px 0; margin: 0;}
 .friend__list{margin:0; padding:0;}
+#allFriends .add{display:block; color: #4F4F4F;position:absolute; right:10px; top:10px;font-size:3em;cursor:pointer;}
+#allFriends .delete{display:none;}
+#selectFriends .delete{display:block;color: #4F4F4F; position:absolute; right:10px; top:10px;font-size:1.8em;cursor:pointer;}
+#selectFriends .add{display:none;}
