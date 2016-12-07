@@ -30,31 +30,56 @@ new Promise(function(resolve){
     });
    })
 }).then(function(allFriendsObj){
-
-var selectFriendsObj= [];
 var allFriendsList = document.getElementById('allFriends');
 var selectFriendsList = document.getElementById('selectFriends');
 
-      for (var item of allFriendsObj){
+ if (sessionStorage.getItem('allFriends')){
 
+  allFriendsObj = JSON.parse(sessionStorage.getItem('allFriends'));
+  console.log(allFriendsObj);
+    for (var item of allFriendsObj){
        addFriend(item, allFriendsList);
     }
+}
 
+if (sessionStorage.getItem('selectFriends') == 'undefined'){
+  var selectFriendsObj= [];
+} else{
+
+  selectFriendsObj = JSON.parse(sessionStorage.getItem('selectFriends'));
+    for (var item of selectFriendsObj){
+       addFriend(item, selectFriendsList);
+    }
+}
+
+
+
+
+
+  
+
+    function addFriend(item, list){
+        var source = friendTemplate.innerHTML;
+        var templateFn = Handlebars.compile(source);
+        var template = templateFn(item); 
+        list.innerHTML += template;
+
+  }
+
+// поиск
 document.addEventListener('input', check); //обработчик input
 
      function check(e){
       if (!e.target.tagName=='INPUT'){return false;}
-        
      
          if (e.target.dataset.list === 'allFriends'){
                 searchIn(allFriendsList, allFriendsObj, e.target.value);
-              }  
+         }  
             else if (e.target.dataset.list === 'selectFriends'){
                 searchIn(selectFriendsList, selectFriendsObj, e.target.value);
-                
-            }  
-
+         }  
      }
+
 function searchIn(list, obj, input){
     console.log(list, obj, input);
      list.innerHTML ='';
@@ -69,14 +94,7 @@ function searchIn(list, obj, input){
     }
 }
 
-  function addFriend(item, list){
-        var source = friendTemplate.innerHTML;
-        var templateFn = Handlebars.compile(source);
-        var template = templateFn(item); 
-        list.innerHTML += template;
 
-  }
-// Поиск 
     function findPartial(firstname, lastname, search) {
     if (firstname.toLowerCase().indexOf(search.toLowerCase()) >= 0 || lastname.toLowerCase().indexOf(search.toLowerCase()) >= 0){
         return true;
@@ -85,7 +103,7 @@ function searchIn(list, obj, input){
     }
 
 
-
+//drag&drop
 allFriends.addEventListener('dragstart', handleDragStart, false);
 selectFriends.addEventListener('dragenter', handleDragEnter, false)
 selectFriends.addEventListener('dragover', handleDragOver, false);
@@ -105,14 +123,13 @@ selectFriends.addEventListener('drop', handleDrop, false);
    }
  }
 
-
  function handleDragEnter(e) {
   e.target.classList.add('over');
 }
+
  function handleDragLeave(e) {
   e.target.classList.remove('over');
 }
-
 
 function handleDragOver(e) {
   if (e.preventDefault) {e.preventDefault();}
@@ -125,33 +142,22 @@ function handleDrop(e) {
     var data = e.dataTransfer.getData("text");
      document.getElementById(data).style.backgroundColor = '#fff';
     addToObj(data, selectFriendsObj);
-   deleteFromObj(data, allFriendsObj);
-   e.target.appendChild(document.getElementById(data));
-
-   console.log(selectFriendsObj);
-
-   
-
+    deleteFromObj(data, allFriendsObj);
+    e.target.appendChild(document.getElementById(data));
+    data.setAttribute('draggable', false);
     e.stopPropagation();
     return false;
 }
 
-
+//
 function addToObj(data, obj){
-    selectFriendItem = selectFriends.querySelectorAll('.friend__item');
-    console.log(selectFriendItem);
-   if (selectFriendItem.length == 0){
-      var i = 0;
-   } else{
-     i = selectFriendItem.length;
-   }
-    obj[i]={};
-    obj[i].uid =document.getElementById(data).id
-    obj[i].first_name = document.getElementById(data).dataset.firstname;
-    obj[i].last_name = document.getElementById(data).dataset.lastname;
-    obj[i].photo_50 = document.getElementById(data).dataset.photo;
- 
 
+  var  friend={};
+       friend.uid =document.getElementById(data).id
+       friend.first_name = document.getElementById(data).dataset.firstname;
+       friend.last_name = document.getElementById(data).dataset.lastname;
+       friend.photo_50 = document.getElementById(data).dataset.photo;
+       obj.push(friend);
 }
 
 function deleteFromObj(data, obj){
@@ -168,16 +174,19 @@ function habdleClick(e){
   var e=e.target;
   if(e.className =='add'){
    var data = e.closest('li').getAttribute('id');
-
    addToObj(data, selectFriendsObj);
+   deleteFromObj(data, allFriendsObj);
    selectFriendsList.appendChild(document.getElementById(data));
+   document.getElementById(data).setAttribute('draggable', false);
   } else if(   e.className == 'delete'){
    var data = e.closest('li').getAttribute('id');
    deleteFromObj(data, selectFriendsObj)
    addToObj(data, allFriendsObj);
    allFriendsList.appendChild(document.getElementById(data));
+    document.getElementById(data).setAttribute('draggable', true);
+  } else if (e.tagName=='BUTTON'){
+    sessionStorage.setItem("allFriends", JSON.stringify(allFriendsObj));
+    sessionStorage.setItem("selectFriends", JSON.stringify(selectFriendsObj));
   }
-
 }
-
   });

@@ -39,6 +39,7 @@ h1{ color: #fff;background-color: #FF8E6C; padding:13px 15px; font-size:1.333em;
     .friend__img{float:left;}
     .friend__name{float:left; margin-left:10px;line-height:50px;}
     .friend__item{list-style:none;cursor:move;border-top:1px solid #ccc;padding:10px 0; position:relative;}
+    #selectFriends .friend__item{cursor: default;}
     .friend__item:after {
   content: ".";
   display: block;
