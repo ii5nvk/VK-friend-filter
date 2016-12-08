@@ -23,65 +23,36 @@ new Promise(function(resolve){
             console.log('error');
             reject(new Error('error'));
         } else{
-       let allFriendsObj = serverAnswer.response; 
+       let allFriendsObj = serverAnswer.response; //массив всех друзей
 
         resolve(allFriendsObj);
         }
     });
    })
 }).then(function(allFriendsObj){
-  
-var allFriendsList = document.getElementById('allFriends');
-var selectFriendsList = document.getElementById('selectFriends');
+
+let selectFriendsObj= []; //массив выбранных друзей
+let allFriendsList = document.getElementById('allFriends');   // контейнер для вывода всех друзей
+let selectFriendsList = document.getElementById('selectFriends');  // контейнер для вывода выбранных друзей
 let source = friendTemplate.innerHTML;
 let templateFn = Handlebars.compile(source);
 
+// =============== Вывод всех друзей ==================
  if (sessionStorage.getItem('allFriends')){
+  allFriendsObj = JSON.parse(sessionStorage.getItem('allFriends'));
+}
+ let template = templateFn({list:allFriendsObj}); 
+ allFriendsList.innerHTML += template;
 
-  allFriendsObj = JSON.parse(sessionStorage.getItem('allFriends'));}
-  console.log(allFriendsObj);
-
-   let template = templateFn({list:allFriendsObj}); 
-   allFriendsList.innerHTML += template;
-
-
-
-
-if (!sessionStorage.getItem('selectFriends') ){
-  var selectFriendsObj= [];
-} else{
-
+// =============== Вывод выбранных друзей (если они сохранены) ==================
+if (sessionStorage.getItem('selectFriends') ){
   selectFriendsObj = JSON.parse(sessionStorage.getItem('selectFriends'));
-
-    
-        let template = templateFn({list:selectFriendsObj}); 
-        selectFriendsList.innerHTML += template;
-
-
-/*    for (var item of selectFriendsObj){
-       addFriend(item, selectFriendsList);
-    }*/
+  let template = templateFn({list:selectFriendsObj}); 
+  selectFriendsList.innerHTML += template;
 }
 
-      /*  let source = document.getElementById('playerItemTemplate').innerHTML;
-        let templateFn = Handlebars.compile(source);
-        let template = templateFn({list: response.response});
 
-        results.innerHTML = template;*/
-
-
-
-  
-
-    function addFriend(item, list){
-        var source = friendTemplate.innerHTML;
-        var templateFn = Handlebars.compile(source);
-        var template = templateFn(item); 
-        list.innerHTML += template;
-
-  }
-
-// поиск
+// =============== Поиск ==================
 document.addEventListener('input', check); //обработчик input
 
      function check(e){
@@ -95,27 +66,32 @@ document.addEventListener('input', check); //обработчик input
          }  
      }
 
+// =============== Поиск ==================
 function searchIn(list, obj, input){
-    console.log(list, obj, input);
-     list.innerHTML ='';
-     
-     for (var item of obj){
+
+for (let i = 0; i < list.children.length; ++i) {
+      list.children[i].style.display ='none'; 
+    } 
+
+      for (let item of obj){
         if (!input=="" & findPartial(item.first_name, item.last_name, input)){
-            addFriend(item, list);
+              document.getElementById(item.uid).style.display = "block";
         }
         else if (input==""){
-            addFriend(item, list);
+            document.getElementById(item.uid).style.display = "block";
         }
     }
+
 }
 
+function findPartial(firstname, lastname, search) {
 
-    function findPartial(firstname, lastname, search) {
-    if (firstname.toLowerCase().indexOf(search.toLowerCase()) >= 0 || lastname.toLowerCase().indexOf(search.toLowerCase()) >= 0){
+    if (firstname.toLowerCase().indexOf(search.toLowerCase().trim()) >= 0 || lastname.toLowerCase().indexOf(search.toLowerCase().trim()) >= 0 || firstname.concat(' ', lastname).toLowerCase().indexOf(search.toLowerCase().trim()) >= 0 || lastname.concat(' ', firstname).toLowerCase().indexOf(search.toLowerCase().trim()) >= 0){
+    //  firstname.concat(' ', lastname).toLowerCase().indexOf(search.toLowerCase().trim())
         return true;
      }
-    return false;
-    }
+return false;
+}
 
 
 //drag&drop
