@@ -46,16 +46,14 @@
       </div>
      
 <script type="text/x-handlebars-template" id="friendTemplate">
-
-
+   {{#each list}}
     <li class="friend__item" draggable="true" id="{{uid}}" data-firstname="{{first_name}}" data-lastname="{{last_name}}" data-photo="{{photo_50}}">
       <div class="friend__img"><img src="{{photo_50}}" alt="{{first_name}} {{last_name}}" class="friend__img__pic"></div>
       <div class="friend__name">{{first_name}} {{last_name}}</div>
       <div class="add">+</div>
       <div class="delete">X</div>
     </li>
-
-
+ {{/each}}
 </script>
-   </body>
+</body>
 </html>

@@ -30,29 +30,44 @@ new Promise(function(resolve){
     });
    })
 }).then(function(allFriendsObj){
+  
 var allFriendsList = document.getElementById('allFriends');
 var selectFriendsList = document.getElementById('selectFriends');
+let source = friendTemplate.innerHTML;
+let templateFn = Handlebars.compile(source);
 
  if (sessionStorage.getItem('allFriends')){
 
-  allFriendsObj = JSON.parse(sessionStorage.getItem('allFriends'));
+  allFriendsObj = JSON.parse(sessionStorage.getItem('allFriends'));}
   console.log(allFriendsObj);
-    for (var item of allFriendsObj){
-       addFriend(item, allFriendsList);
-    }
-}
 
-if (sessionStorage.getItem('selectFriends') == 'undefined'){
+   let template = templateFn({list:allFriendsObj}); 
+   allFriendsList.innerHTML += template;
+
+
+
+
+if (!sessionStorage.getItem('selectFriends') ){
   var selectFriendsObj= [];
 } else{
 
   selectFriendsObj = JSON.parse(sessionStorage.getItem('selectFriends'));
-    for (var item of selectFriendsObj){
+
+    
+        let template = templateFn({list:selectFriendsObj}); 
+        selectFriendsList.innerHTML += template;
+
+
+/*    for (var item of selectFriendsObj){
        addFriend(item, selectFriendsList);
-    }
+    }*/
 }
 
+      /*  let source = document.getElementById('playerItemTemplate').innerHTML;
+        let templateFn = Handlebars.compile(source);
+        let template = templateFn({list: response.response});
 
+        results.innerHTML = template;*/
 
 
 
@@ -144,7 +159,7 @@ function handleDrop(e) {
     addToObj(data, selectFriendsObj);
     deleteFromObj(data, allFriendsObj);
     e.target.appendChild(document.getElementById(data));
-    data.setAttribute('draggable', false);
+    document.getElementById(data).setAttribute('draggable', false);
     e.stopPropagation();
     return false;
 }
